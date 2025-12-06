@@ -3,25 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task List</title>
+    <title>Advanced Task List</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>📝 Task List</h1>
+        <div class="header">
+            <h1>📝 Advanced Task List</h1>
+            <div class="sync-status">
+                <span id="syncStatus">✓ Synced</span>
+                <span class="offline-indicator" id="offlineIndicator" style="display: none;">📡 Offline</span>
+            </div>
+        </div>
         
+        <div class="toolbar">
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="🔍 Search tasks (Ctrl+F)..." />
+            </div>
+            
+            <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
+            
+            <div class="priority-filters">
+                <button class="priority-filter" data-priority="all">All</button>
+                <button class="priority-filter" data-priority="1">🔴 High</button>
+                <button class="priority-filter" data-priority="2">🟡 Medium</button>
+                <button class="priority-filter" data-priority="3">🟢 Low</button>
+            </div>
+        </div>
+
         <div class="input-section">
-            <input type="text" id="taskInput" placeholder="Enter a new task..." />
+            <select id="prioritySelect" title="Task priority">
+                <option value="2">🟡 Medium</option>
+                <option value="1">🔴 High</option>
+                <option value="3">🟢 Low</option>
+            </select>
+            <input type="text" id="taskInput" placeholder="Enter a new task (Ctrl+N)..." />
             <button id="addBtn">Add</button>
+        </div>
+
+        <div class="action-bar">
+            <div class="action-group">
+                <button id="undoBtn" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
+                <button id="redoBtn" title="Redo (Ctrl+Y)" disabled>↷ Redo</button>
+            </div>
+            <div class="action-group">
+                <button id="exportBtn" title="Export tasks">📥 Export</button>
+                <button id="importBtn" title="Import tasks">📤 Import</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" />
+            </div>
+            <button id="helpBtn" title="Keyboard shortcuts">⌨️ Shortcuts</button>
         </div>
 
         <ul id="taskList"></ul>
 
-        <div class="counter">
-            <span id="taskCounter">0 tasks remaining</span>
+        <div class="footer">
+            <div class="counter">
+                <span id="taskCounter">0 tasks remaining</span>
+            </div>
+            <div class="history-info">
+                <span id="historyInfo">History: 0 changes</span>
+            </div>
         </div>
     </div>
 
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="helpModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>⌨️ Keyboard Shortcuts</h2>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>N</kbd>
+                    <span>New task</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Z</kbd>
+                    <span>Undo</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Y</kbd>
+                    <span>Redo</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>F</kbd>
+                    <span>Search</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>1</kbd>
+                    <span>High priority tasks</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>2</kbd>
+                    <span>Medium priority tasks</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>3</kbd>
+                    <span>Low priority tasks</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Enter</kbd>
+                    <span>Add task</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="indexeddb-manager.js"></script>
+    <script src="sync-manager.js"></script>
+    <script src="undo-manager.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    </script>
 </body>
 </html>
